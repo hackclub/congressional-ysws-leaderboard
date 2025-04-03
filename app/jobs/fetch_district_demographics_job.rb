@@ -7,13 +7,16 @@ class FetchDistrictDemographicsJob < ApplicationJob
   queue_as :default
 
   # ACS 5-Year Estimates Year (Update as needed)
-  ACS_YEAR = 2022 
+  ACS_YEAR = 2023 
   
   # Variables from ACS Data Profiles (DP) & Detailed Tables (B)
   # DP03_0062E: Median household income in the past 12 months (in YYYY inflation-adjusted dollars)
-  # B14007_007E: School Enrollment - Enrolled in grade 9 to grade 12
+  # B14007_013E: School Enrollment - Enrolled in grade 9
+  # B14007_014E: School Enrollment - Enrolled in grade 10
+  # B14007_015E: School Enrollment - Enrolled in grade 11
+  # B14007_016E: School Enrollment - Enrolled in grade 12
   INCOME_VAR = 'DP03_0062E' 
-  ENROLLMENT_VAR = 'B14007_007E' 
+  ENROLLMENT_VARS = ['B14007_013E', 'B14007_014E', 'B14007_015E', 'B14007_016E'].freeze
 
   # Basic mapping - expand as needed or use a gem
   STATE_FIPS = {
@@ -88,7 +91,7 @@ class FetchDistrictDemographicsJob < ApplicationJob
     enrollment = nil
     acs5_endpoint = "https://api.census.gov/data/#{ACS_YEAR}/acs/acs5"
     acs5_params = {
-      get: "NAME,#{ENROLLMENT_VAR}",
+      get: "NAME,#{ENROLLMENT_VARS.join(',')}", # Request all grade vars
       for: "congressional district:#{district_code}",
       in: "state:#{state_fips}"
       # key: ENV['CENSUS_API_KEY'] 
@@ -97,8 +100,19 @@ class FetchDistrictDemographicsJob < ApplicationJob
     if acs5_data
       acs5_header = acs5_data[0]
       acs5_values = acs5_data[1]
-      acs5_enrollment_index = acs5_header.index(ENROLLMENT_VAR)
-      enrollment = parse_value(acs5_values[acs5_enrollment_index], district.name, "enrollment") if acs5_enrollment_index
+      # Find indices, parse each value, and sum them up
+      total_enrollment = 0
+      ENROLLMENT_VARS.each do |var|
+        index = acs5_header.index(var)
+        if index
+          # Parse value, treat nil as 0 for summation
+          grade_enrollment = parse_value(acs5_values[index], district.name, "enrollment (#{var})") || 0
+          total_enrollment += grade_enrollment
+        else
+          Rails.logger.warn "Enrollment variable #{var} not found in response header for #{district.name}"
+        end
+      end
+      enrollment = total_enrollment
     end
 
     # Return nil only if BOTH calls failed entirely (though make_census_api_call handles logging)
