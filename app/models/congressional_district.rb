@@ -18,7 +18,8 @@ class CongressionalDistrict < ApplicationRecord
     .group(:id)
     .select(<<~SQL)
       congressional_districts.*,
-      COALESCE(SUM((ysws_projects.fields->>'YSWS–Weighted Project Contribution')::float), 0) as project_count
+      COALESCE(SUM((ysws_projects.fields->>'YSWS–Weighted Project Contribution')::float), 0) as project_count,
+      congressional_districts.high_school_enrollment
     SQL
     .order('project_count DESC, state ASC, district_number ASC')
   end

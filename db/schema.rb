@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_03_202104) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_03_211106) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -36,6 +36,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_202104) do
     t.string "representative_name"
     t.string "representative_party"
     t.string "representative_picture_url"
+    t.integer "high_school_enrollment"
     t.index "st_geomfromewkb(((boundary)::geometry)::bytea)", name: "index_congressional_districts_boundary_gist_geometry", using: :gist
     t.index ["boundary"], name: "index_congressional_districts_on_boundary", using: :gist
     t.index ["state", "district_number"], name: "index_congressional_districts_on_state_and_district_number", unique: true

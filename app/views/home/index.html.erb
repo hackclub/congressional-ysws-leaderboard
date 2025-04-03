@@ -16,6 +16,7 @@
       <th>Weighted Contribution</th>
       <th>Representative</th>
       <th>Party</th>
+      <th>High School Enrollment</th>
       <th>Picture</th>
     </tr>
   </thead>
@@ -27,6 +28,7 @@
         <td><%= number_with_precision(district.project_count, precision: 1) %></td>
         <td><%= district.representative_name %></td>
         <td><%= district.representative_party %></td>
+        <td><%= number_with_delimiter(district.high_school_enrollment) %></td>
         <td>
           <% if district.representative_picture_url.present? %>
             <%= image_tag district.representative_picture_url, alt: "Photo of #{district.representative_name}", class: 'representative-picture' %>

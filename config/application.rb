@@ -39,6 +39,10 @@ module App
           cron: '0 0 * * 0', # Every Sunday at midnight
           class: 'ImportRepresentativesJob'
         },
+        fetch_high_school_enrollment: {
+          cron: '0 0 1 * *', # At midnight on the 1st day of each month
+          class: 'FetchHighSchoolEnrollmentJob'
+        },
         sync_ysws_projects: {
             cron: '45 * * * *', # Every hour at 45 minutes past the hour
             class: 'Ysws::SyncProjectsJob'
