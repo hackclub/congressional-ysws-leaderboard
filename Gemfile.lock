@@ -122,6 +122,9 @@ GEM
       fugit (>= 1.11.0)
       railties (>= 6.1.0)
       thor (>= 1.0.0)
+    http-2 (1.0.2)
+    httpx (1.4.3)
+      http-2 (>= 1.0.0)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     importmap-rails (2.1.0)
@@ -354,6 +357,7 @@ DEPENDENCIES
   capybara
   debug
   good_job
+  httpx
   importmap-rails
   jbuilder
   kamal

@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_03_165054) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_03_173508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
+
+  create_table "addresses", force: :cascade do |t|
+    t.string "address", null: false
+    t.geography "location", limit: {srid: 4326, type: "st_point", geographic: true}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["address"], name: "index_addresses_on_address", unique: true
+    t.index ["location"], name: "index_addresses_on_location", using: :gist
+  end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -103,5 +112,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_165054) do
     t.index ["priority", "scheduled_at"], name: "index_good_jobs_on_priority_scheduled_at_unfinished_unlocked", where: "((finished_at IS NULL) AND (locked_by_id IS NULL))"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
+  end
+
+  create_table "ysws_projects", primary_key: "airtable_id", id: :string, force: :cascade do |t|
+    t.jsonb "fields", default: {}, null: false
+    t.geography "location", limit: {srid: 4326, type: "st_point", geographic: true}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fields"], name: "index_ysws_projects_on_fields", using: :gin
+    t.index ["location"], name: "index_ysws_projects_on_location", using: :gist
   end
 end
