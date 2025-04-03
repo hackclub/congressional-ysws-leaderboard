@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
+  <!-- Capitol Dome Outline -->
+  <path d="M50 10 C 30 10, 15 30, 15 50 L 15 75 Q 15 80, 20 80 L 80 80 Q 85 80, 85 75 L 85 50 C 85 30, 70 10, 50 10 Z M 50 20 C 65 20, 75 30, 75 50 L 75 70 L 25 70 L 25 50 C 25 30, 35 20, 50 20 Z" fill="none" stroke="currentColor" stroke-width="5"/>
+  <line x1="20" y1="80" x2="80" y2="80" stroke="currentColor" stroke-width="6"/>
+  <!-- Leaderboard/Graph element -->
+  <rect x="35" y="55" width="10" height="10" />
+  <rect x="50" y="48" width="10" height="17" />
+  <rect x="65" y="40" width="10" height="25" />
+  <!-- Small details on top -->
+  <circle cx="50" cy="15" r="4"/>
+</svg> 
