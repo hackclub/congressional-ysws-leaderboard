@@ -17,6 +17,7 @@
       <th>Representative</th>
       <th>Party</th>
       <th>High School Enrollment</th>
+      <th>Median Household Income</th>
       <th>Picture</th>
     </tr>
   </thead>
@@ -29,6 +30,7 @@
         <td><%= district.representative_name %></td>
         <td><%= district.representative_party %></td>
         <td><%= number_with_delimiter(district.high_school_enrollment) %></td>
+        <td><%= number_to_currency(district.median_household_income, precision: 0) %></td>
         <td>
           <% if district.representative_picture_url.present? %>
             <%= image_tag district.representative_picture_url, alt: "Photo of #{district.representative_name}", class: 'representative-picture' %>
