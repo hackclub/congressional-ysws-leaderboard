@@ -74,19 +74,18 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  <<: *default
   primary: &primary_production
     <<: *default
     database: congressional_ysws_leaderboard_production
   cache:
-    <<: *default
+    <<: *primary_production
     database: app_production_cache
     migrations_paths: db/cache_migrate
   queue:
-    <<: *default
+    <<: *primary_production
     database: app_production_queue
     migrations_paths: db/queue_migrate
   cable:
-    <<: *default
+    <<: *primary_production
     database: app_production_cable
     migrations_paths: db/cable_migrate
