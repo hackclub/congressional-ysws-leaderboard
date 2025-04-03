@@ -76,9 +76,6 @@ test:
 production:
   <<: *default
   database: congressional_ysws_leaderboard_production
-  username: <%= ENV["CONGRESSIONAL_YSWS_LEADERBOARD_DATABASE_USERNAME"] %>
-  password: <%= ENV["CONGRESSIONAL_YSWS_LEADERBOARD_DATABASE_PASSWORD"] %>
-  host: <%= ENV["CONGRESSIONAL_YSWS_LEADERBOARD_DATABASE_HOST"] %>
   cache:
     <<: *default
     database: app_production_cache
