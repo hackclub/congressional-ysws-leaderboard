@@ -1,11 +1,22 @@
 <h1>YSWS Leaderboard</h1>
 
+<style>
+  .representative-picture {
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 50%; /* Optional: make images circular */
+  }
+</style>
+
 <table>
   <thead>
     <tr>
       <th>Rank</th>
       <th>District</th>
       <th>Weighted Contribution</th>
+      <th>Representative</th>
+      <th>Party</th>
+      <th>Picture</th>
     </tr>
   </thead>
   <tbody>
@@ -14,6 +25,13 @@
         <td><%= index + 1 %></td>
         <td><%= district.name %></td>
         <td><%= number_with_precision(district.project_count, precision: 1) %></td>
+        <td><%= district.representative_name %></td>
+        <td><%= district.representative_party %></td>
+        <td>
+          <% if district.representative_picture_url.present? %>
+            <%= image_tag district.representative_picture_url, alt: "Photo of #{district.representative_name}", class: 'representative-picture' %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
