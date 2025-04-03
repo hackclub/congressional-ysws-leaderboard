@@ -61,3 +61,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem 'activerecord-postgis-adapter'
+gem 'rgeo'
+gem 'rgeo-geojson'
