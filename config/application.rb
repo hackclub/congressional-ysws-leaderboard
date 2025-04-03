@@ -30,7 +30,7 @@ module App
       retry_on_unhandled_error: false,
       on_thread_error: -> (exception) { Rails.error.report(exception) },
       execution_mode: :async,
-      max_threads: 32,
+      max_threads: 5,
       poll_interval: 30,
       enable_cron: true,
       dashboard_default_locale: :en

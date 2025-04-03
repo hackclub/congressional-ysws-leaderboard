@@ -12,6 +12,10 @@ RUN apt-get update -qq && \
     curl \
     vim \
     watchman \
+    libgeos++-dev \
+    libgeos-c1v5 \
+    libgeos-dev \
+    libgeos-doc \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives
 
 # Set working directory

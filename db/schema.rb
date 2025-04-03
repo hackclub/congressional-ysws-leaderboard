@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_03_180221) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_03_185043) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -23,6 +23,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_180221) do
     t.boolean "invalid_address", default: false, null: false
     t.index ["address"], name: "index_addresses_on_address", unique: true
     t.index ["location"], name: "index_addresses_on_location", using: :gist
+  end
+
+  create_table "congressional_districts", force: :cascade do |t|
+    t.string "state", null: false
+    t.integer "district_number", null: false
+    t.geography "boundary", limit: {srid: 4326, type: "geometry", geographic: true}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "st_geomfromewkb(((boundary)::geometry)::bytea)", name: "index_congressional_districts_boundary_gist_geometry", using: :gist
+    t.index ["boundary"], name: "index_congressional_districts_on_boundary", using: :gist
+    t.index ["state", "district_number"], name: "index_congressional_districts_on_state_and_district_number", unique: true
   end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -120,6 +131,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_180221) do
     t.geography "location", limit: {srid: 4326, type: "st_point", geographic: true}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index "st_geomfromewkb(((location)::geometry)::bytea)", name: "index_ysws_projects_location_gist_geometry", using: :gist
     t.index ["fields"], name: "index_ysws_projects_on_fields", using: :gin
     t.index ["location"], name: "index_ysws_projects_on_location", using: :gist
   end

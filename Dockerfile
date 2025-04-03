@@ -48,8 +48,10 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-
-
+# Install PostgreSQL client and other dependencies
+RUN apt-get update -qq && \
+    apt-get install -y postgresql-client libpq-dev libgeos-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 # Final stage for app image
 FROM base

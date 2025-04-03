@@ -1,0 +1,20 @@
+<h1>YSWS Leaderboard</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>District</th>
+      <th>Weighted Contribution</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @districts.each_with_index do |district, index| %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= district.name %></td>
+        <td><%= number_with_precision(district.project_count, precision: 1) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
