@@ -27,10 +27,12 @@ module Ysws
           
           # Try to find existing address first
           location = nil
+          district_id = nil
           if address_to_geocode.present?
             existing_address = Address.find_by(address: address_to_geocode)
             if existing_address
               location = existing_address.location
+              district_id = existing_address.congressional_district_id
             end
           end
           
@@ -39,7 +41,8 @@ module Ysws
             {
               airtable_id: record["id"],
               fields: fields,
-              location: location  # Use location if found, nil otherwise
+              location: location,
+              congressional_district_id: district_id
             },
             unique_by: :airtable_id
           )

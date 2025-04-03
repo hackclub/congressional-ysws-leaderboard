@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_03_185043) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_03_190510) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -21,7 +21,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_185043) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "invalid_address", default: false, null: false
+    t.bigint "congressional_district_id"
     t.index ["address"], name: "index_addresses_on_address", unique: true
+    t.index ["congressional_district_id"], name: "index_addresses_on_congressional_district_id"
     t.index ["location"], name: "index_addresses_on_location", using: :gist
   end
 
@@ -131,8 +133,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_185043) do
     t.geography "location", limit: {srid: 4326, type: "st_point", geographic: true}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "congressional_district_id"
     t.index "st_geomfromewkb(((location)::geometry)::bytea)", name: "index_ysws_projects_location_gist_geometry", using: :gist
+    t.index ["congressional_district_id"], name: "index_ysws_projects_on_congressional_district_id"
     t.index ["fields"], name: "index_ysws_projects_on_fields", using: :gin
     t.index ["location"], name: "index_ysws_projects_on_location", using: :gist
   end
+
+  add_foreign_key "addresses", "congressional_districts"
+  add_foreign_key "ysws_projects", "congressional_districts"
 end

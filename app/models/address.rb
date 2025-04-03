@@ -11,41 +11,60 @@ class Address < ApplicationRecord
     end
   end
 
+  belongs_to :congressional_district, optional: true
+
   validates :address, presence: true, uniqueness: true
-  validates :location, presence: true, unless: :invalid_address?
+  validates :location, presence: true, unless: -> { invalid_address? || congressional_district_id.present? }
 
-  before_validation :geocode_address, on: :create
+  before_validation :geocode_and_find_district, on: :create
 
-  def self.geocode!(address)
-    # Try to find by exact user input
-    found = find_by(address: address)
+  def self.find_or_geocode_and_set_district!(address_text)
+    found = find_by(address: address_text)
     return found if found
 
-    # If not found, geocode and create new record
+    new_address = new(address: address_text)
+    new_address.geocode_and_find_district
+    new_address.save!
+    new_address
+  rescue => e
+    if invalid_input_error?(e)
+      existing_invalid = find_by(address: address_text, invalid_address: true)
+      return existing_invalid if existing_invalid
+      create!(address: address_text, location: nil, invalid_address: true, congressional_district_id: nil)
+    else
+      raise GeocodeError.new(
+        "Failed to geocode or save address: #{address_text}",
+        original_error: e,
+        address: address_text,
+        status: e.try(:status),
+        invalid_input: invalid_input_error?(e)
+      )
+    end
+  end
+
+  def geocode_and_find_district
+    return if address.blank?
+    return if location.present? || invalid_address?
+
     begin
       result = GoogleMapsService.instance.geocode(address)
-      
-      create!(
-        address: address,  # Keep original user input
-        location: "POINT(#{result[:lng]} #{result[:lat]})"
-      )
+      new_location = "POINT(#{result[:lng]} #{result[:lat]})"
+      self.location = new_location
+      self.invalid_address = false
+
+      district = CongressionalDistrict.find_by_location(new_location)
+      self.congressional_district_id = district&.id
+
     rescue => e
-      if invalid_input_error?(e)
-        # For invalid input, create record with nil location
-        create!(
-          address: address,
-          location: nil,
-          invalid_address: true
-        )
+      if self.class.invalid_input_error?(e)
+        self.location = nil
+        self.invalid_address = true
+        self.congressional_district_id = nil
       else
-        # For other errors (API issues, network problems, etc), raise error
-        raise GeocodeError.new(
-          "Failed to geocode address: #{address}",
-          original_error: e,
-          address: address,
-          status: e.try(:status),
-          invalid_input: invalid_input_error?(e)
-        )
+        errors.add(:address, :geocoding_failed,
+                   message: "Could not geocode address: #{e.message}",
+                   status: e.try(:status))
+        self.congressional_district_id = nil
       end
     end
   end
@@ -60,26 +79,5 @@ class Address < ApplicationRecord
 
   def invalid_address?
     invalid_address == true
-  end
-
-  def geocode_address
-    return if address.blank?
-    return if invalid_address? # Skip geocoding if already marked invalid
-
-    begin
-      result = GoogleMapsService.instance.geocode(address)
-      self.location = "POINT(#{result[:lng]} #{result[:lat]})"
-      self.invalid_address = false
-    rescue => e
-      if self.class.invalid_input_error?(e)
-        self.location = nil
-        self.invalid_address = true
-      else
-        errors.add(:address, :geocoding_failed, 
-          message: "Could not geocode address: #{e.message}",
-          status: e.try(:status)
-        )
-      end
-    end
   end
 end

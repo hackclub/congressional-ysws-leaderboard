@@ -5,29 +5,34 @@ class CongressionalDistrict < ApplicationRecord
   
   validates :state, uniqueness: { scope: :district_number }
 
+  # Add association to Ysws::Project
+  has_many :ysws_projects, class_name: 'Ysws::Project', foreign_key: 'congressional_district_id'
+
   def name
     "#{state}-#{district_number}"
   end
 
   def self.leaderboard
-    joins(<<~SQL)
-      LEFT JOIN ysws_projects ON 
-        congressional_districts.boundary && ysws_projects.location AND
-        ST_Contains(
-          congressional_districts.boundary::geometry,
-          ysws_projects.location::geometry
-        )
-    SQL
+    # Optimized query using the pre-calculated congressional_district_id
+    left_joins(:ysws_projects) # Use left_joins to include districts with 0 projects
     .group(:id)
     .select(<<~SQL)
       congressional_districts.*,
-      COALESCE(SUM((fields->>'YSWS–Weighted Project Contribution')::float), 0) as project_count
+      COALESCE(SUM((ysws_projects.fields->>'YSWS–Weighted Project Contribution')::float), 0) as project_count
     SQL
     .order('project_count DESC, state ASC, district_number ASC')
   end
 
   def self.find_by_location(point)
-    where("ST_Contains(ST_GeomFromEWKB(boundary), ST_GeomFromEWKB(?))", point)
-    .first
+    # This method is still useful for finding a single district for a point,
+    # but it's no longer used for the main leaderboard calculation.
+    # Keep the optimized spatial query here.
+    find_by_sql([<<~SQL, point.to_s, point.to_s]).first
+      SELECT cd.*
+      FROM congressional_districts cd
+      WHERE cd.boundary && ST_GeographyFromText(?)
+      AND ST_Contains(cd.boundary::geometry, ST_GeometryFromText(?, 4326))
+      LIMIT 1
+    SQL
   end
 end
