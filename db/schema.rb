@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_03_173508) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_03_180221) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -20,6 +20,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_173508) do
     t.geography "location", limit: {srid: 4326, type: "st_point", geographic: true}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "invalid_address", default: false, null: false
     t.index ["address"], name: "index_addresses_on_address", unique: true
     t.index ["location"], name: "index_addresses_on_location", using: :gist
   end

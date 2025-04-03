@@ -14,22 +14,40 @@ module Ysws
         
         response["records"].each do |record|
           fields = sanitize_fields(record["fields"])
-          
-          # Extract lat/lng from address if available
-          location = if fields["Geocoded Location"]
-            lat = fields["Geocoded Location"]["lat"]
-            lng = fields["Geocoded Location"]["lng"]
-            "POINT(#{lng} #{lat})"
-          end
 
+          # Construct address from various address fields
+          address_components = []
+          address_components << fields["Address (Line 1)"] if fields["Address (Line 1)"].present?
+          address_components << fields["City"] if fields["City"].present?
+          address_components << fields["State / Province"] if fields["State / Province"].present?
+          address_components << fields["ZIP / Postal Code"] if fields["ZIP / Postal Code"].present?
+          address_components << fields["Country"] if fields["Country"].present?
+          
+          address_to_geocode = address_components.compact.join(", ")
+          
+          # Try to find existing address first
+          location = nil
+          if address_to_geocode.present?
+            existing_address = Address.find_by(address: address_to_geocode)
+            if existing_address
+              location = existing_address.location
+            end
+          end
+          
+          # Create/update the project
           Ysws::Project.upsert(
             {
               airtable_id: record["id"],
               fields: fields,
-              location: location
+              location: location  # Use location if found, nil otherwise
             },
             unique_by: :airtable_id
           )
+
+          # Only queue geocoding if we have an address and it wasn't found
+          if address_to_geocode.present? && location.nil?
+            GeocodeProjectJob.perform_later(record["id"], address_to_geocode)
+          end
         end
 
         offset = response["offset"]
