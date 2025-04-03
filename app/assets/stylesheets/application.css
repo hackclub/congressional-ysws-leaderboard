@@ -8,3 +8,27 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* Add basic table styling for gridlines */
+table {
+  border-collapse: collapse; /* Removes double borders */
+  width: 100%; /* Optional: make table full width */
+  margin-bottom: 1rem; /* Optional: add some space below the table */
+}
+
+th,
+td {
+  border: 1px solid #ddd; /* Light grey border */
+  padding: 8px; /* Add some padding inside cells */
+  text-align: left; /* Align text to the left */
+}
+
+th {
+  background-color: #f2f2f2; /* Light grey background for header */
+  font-weight: bold;
+}
+
+/* Optional: Add hover effect on rows */
+tr:hover {
+  background-color: #f5f5f5;
+}
