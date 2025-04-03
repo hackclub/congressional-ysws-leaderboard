@@ -33,7 +33,17 @@ module App
       max_threads: 5,
       poll_interval: 30,
       enable_cron: true,
-      dashboard_default_locale: :en
+      dashboard_default_locale: :en,
+      cron: {
+        import_representatives: {
+          cron: '0 0 * * 0', # Every Sunday at midnight
+          class: 'ImportRepresentativesJob'
+        },
+        sync_ysws_projects: {
+            cron: '45 * * * *', # Every hour at 45 minutes past the hour
+            class: 'Ysws::SyncProjectsJob'
+        }
+      }
     }
   end
 end
