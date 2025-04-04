@@ -61,16 +61,28 @@
               <% if rank_2_item.recent_projects.any? %>
                 <% rank_2_item.recent_projects.each do |proj| %>
                   <div class="bg-white border border-gray-200 rounded p-2 text-xs text-gray-700 shadow-sm">
-                    <p class="font-semibold mb-1 truncate"><%= proj.fields['YSWS–Name'].first || 'Untitled Project' %></p>
+                    <p class="font-semibold mb-1 truncate"><%= (proj.fields['YSWS–Name'].is_a?(Array) ? proj.fields['YSWS–Name'].first : proj.fields['YSWS–Name']) || 'Untitled Project' %></p>
                     <% if proj.fields['Description'].present? %>
                       <p class="text-gray-600 text-[11px] mb-2 line-clamp-2"><%= proj.fields['Description'] %></p>
                     <% end %>
-                    <div class="flex space-x-1">
-                      <% if proj.fields['Playable URL'].present? %>
-                        <%= link_to 'Play', proj.fields['Playable URL'], target: '_blank', class: 'text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded hover:bg-green-200' %>
-                      <% end %>
-                      <% if proj.fields['Code URL'].present? %>
-                        <%= link_to 'Code', proj.fields['Code URL'], target: '_blank', class: 'text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded hover:bg-blue-200' %>
+                    <%# Bottom row with buttons and date %>
+                    <div class="flex justify-between items-end mt-1">
+                      <%# Buttons on the left %>
+                      <div class="flex space-x-1">
+                        <% if proj.fields['Playable URL'].present? %>
+                          <%= link_to 'Play', proj.fields['Playable URL'], target: '_blank', class: 'text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded hover:bg-green-200' %>
+                        <% end %>
+                        <% if proj.fields['Code URL'].present? %>
+                          <%= link_to 'Code', proj.fields['Code URL'], target: '_blank', class: 'text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded hover:bg-blue-200' %>
+                        <% end %>
+                      </div>
+                      <%# Date on the right %>
+                      <% if date_str = proj.fields['Approved At'] %>
+                        <% begin %>
+                          <span class="text-[10px] text-gray-500 whitespace-nowrap"><%= Date.parse(date_str).strftime('%b %d, %Y') %></span>
+                        <% rescue ArgumentError %>
+                          <%# Silently ignore invalid dates or show placeholder %>
+                        <% end %>
                       <% end %>
                     </div>
                   </div>
@@ -120,12 +132,24 @@
                     <% if proj.fields['Description'].present? %>
                       <p class="text-gray-600 text-[11px] mb-2 line-clamp-2"><%= proj.fields['Description'] %></p>
                     <% end %>
-                    <div class="flex space-x-1">
-                      <% if proj.fields['Playable URL'].present? %>
-                        <%= link_to 'Play', proj.fields['Playable URL'], target: '_blank', class: 'text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded hover:bg-green-200' %>
-                      <% end %>
-                      <% if proj.fields['Code URL'].present? %>
-                        <%= link_to 'Code', proj.fields['Code URL'], target: '_blank', class: 'text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded hover:bg-blue-200' %>
+                    <%# Bottom row with buttons and date %>
+                    <div class="flex justify-between items-end mt-1">
+                      <%# Buttons on the left %>
+                      <div class="flex space-x-1">
+                        <% if proj.fields['Playable URL'].present? %>
+                          <%= link_to 'Play', proj.fields['Playable URL'], target: '_blank', class: 'text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded hover:bg-green-200' %>
+                        <% end %>
+                        <% if proj.fields['Code URL'].present? %>
+                          <%= link_to 'Code', proj.fields['Code URL'], target: '_blank', class: 'text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded hover:bg-blue-200' %>
+                        <% end %>
+                      </div>
+                      <%# Date on the right %>
+                      <% if date_str = proj.fields['Approved At'] %>
+                        <% begin %>
+                          <span class="text-[10px] text-gray-500 whitespace-nowrap"><%= Date.parse(date_str).strftime('%b %d, %Y') %></span>
+                        <% rescue ArgumentError %>
+                          <%# Silently ignore invalid dates or show placeholder %>
+                        <% end %>
                       <% end %>
                     </div>
                   </div>
@@ -175,12 +199,24 @@
                     <% if proj.fields['Description'].present? %>
                       <p class="text-gray-600 text-[11px] mb-2 line-clamp-2"><%= proj.fields['Description'] %></p>
                     <% end %>
-                    <div class="flex space-x-1">
-                      <% if proj.fields['Playable URL'].present? %>
-                        <%= link_to 'Play', proj.fields['Playable URL'], target: '_blank', class: 'text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded hover:bg-green-200' %>
-                      <% end %>
-                      <% if proj.fields['Code URL'].present? %>
-                        <%= link_to 'Code', proj.fields['Code URL'], target: '_blank', class: 'text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded hover:bg-blue-200' %>
+                    <%# Bottom row with buttons and date %>
+                    <div class="flex justify-between items-end mt-1">
+                      <%# Buttons on the left %>
+                      <div class="flex space-x-1">
+                        <% if proj.fields['Playable URL'].present? %>
+                          <%= link_to 'Play', proj.fields['Playable URL'], target: '_blank', class: 'text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded hover:bg-green-200' %>
+                        <% end %>
+                        <% if proj.fields['Code URL'].present? %>
+                          <%= link_to 'Code', proj.fields['Code URL'], target: '_blank', class: 'text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded hover:bg-blue-200' %>
+                        <% end %>
+                      </div>
+                      <%# Date on the right %>
+                      <% if date_str = proj.fields['Approved At'] %>
+                        <% begin %>
+                          <span class="text-[10px] text-gray-500 whitespace-nowrap"><%= Date.parse(date_str).strftime('%b %d, %Y') %></span>
+                        <% rescue ArgumentError %>
+                          <%# Silently ignore invalid dates or show placeholder %>
+                        <% end %>
                       <% end %>
                     </div>
                   </div>
@@ -233,12 +269,24 @@
                     <% if proj.fields['Description'].present? %>
                       <p class="text-gray-600 text-[11px] mb-2 line-clamp-2"><%= proj.fields['Description'] %></p>
                     <% end %>
-                    <div class="flex space-x-1">
-                      <% if proj.fields['Playable URL'].present? %>
-                        <%= link_to 'Play', proj.fields['Playable URL'], target: '_blank', class: 'text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded hover:bg-green-200' %>
-                      <% end %>
-                      <% if proj.fields['Code URL'].present? %>
-                        <%= link_to 'Code', proj.fields['Code URL'], target: '_blank', class: 'text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded hover:bg-blue-200' %>
+                    <%# Bottom row with buttons and date %>
+                    <div class="flex justify-between items-end mt-1">
+                      <%# Buttons on the left %>
+                      <div class="flex space-x-1">
+                        <% if proj.fields['Playable URL'].present? %>
+                          <%= link_to 'Play', proj.fields['Playable URL'], target: '_blank', class: 'text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded hover:bg-green-200' %>
+                        <% end %>
+                        <% if proj.fields['Code URL'].present? %>
+                          <%= link_to 'Code', proj.fields['Code URL'], target: '_blank', class: 'text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded hover:bg-blue-200' %>
+                        <% end %>
+                      </div>
+                      <%# Date on the right %>
+                      <% if date_str = proj.fields['Approved At'] %>
+                        <% begin %>
+                          <span class="text-[10px] text-gray-500 whitespace-nowrap"><%= Date.parse(date_str).strftime('%b %d, %Y') %></span>
+                        <% rescue ArgumentError %>
+                          <%# Silently ignore invalid dates or show placeholder %>
+                        <% end %>
                       <% end %>
                     </div>
                   </div>
