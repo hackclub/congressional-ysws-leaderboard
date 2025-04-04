@@ -44,6 +44,15 @@ class CongressionalDistrict < ApplicationRecord
           END
         ), 0
       ) as project_count,
+      COALESCE(
+        SUM(
+          CASE
+            WHEN (ysws_projects.fields ->> 'Approved At')::date >= NOW() - interval '30 days'
+            THEN (ysws_projects.fields->>'YSWS–Weighted Project Contribution')::float
+            ELSE 0
+          END
+        ), 0
+      ) as recent_project_count,
       congressional_districts.high_school_enrollment,
       congressional_districts.median_household_income
     SQL
