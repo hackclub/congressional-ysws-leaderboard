@@ -22,6 +22,38 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <style>
+      /* CSS-only Tooltip Styles */
+      .has-tooltip {
+        position: relative; /* Establish stacking context */
+      }
+      .tooltip {
+        visibility: hidden;
+        position: absolute;
+        /* Default tooltip styling */
+        background: #fff;
+        color: #374151; /* text-gray-700 */
+        padding: 0.5rem; /* p-2 */
+        border-radius: 0.375rem; /* rounded-md */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+        border: 1px solid #e5e7eb; /* border-gray-200 */
+        font-size: 0.875rem; /* text-sm */
+        white-space: nowrap;
+        margin-top: -2.5rem; /* -mt-10 (adjust as needed) */
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+      }
+      .has-tooltip:hover .tooltip {
+        visibility: visible;
+      }
+      /* Add z-index on hover to the container */
+      .has-tooltip:hover {
+        z-index: 20; /* Bring hovered card container forward */
+      }
+    </style>
+
   </head>
 
   <body>
