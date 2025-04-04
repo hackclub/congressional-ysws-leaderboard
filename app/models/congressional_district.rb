@@ -35,7 +35,15 @@ class CongressionalDistrict < ApplicationRecord
     .group(:id)
     .select(<<~SQL)
       congressional_districts.*,
-      COALESCE(SUM((ysws_projects.fields->>'YSWS–Weighted Project Contribution')::float), 0) as project_count,
+      COALESCE(
+        SUM(
+          CASE
+            WHEN EXTRACT(YEAR FROM (ysws_projects.fields ->> 'Approved At')::date) = 2025
+            THEN (ysws_projects.fields->>'YSWS–Weighted Project Contribution')::float
+            ELSE 0
+          END
+        ), 0
+      ) as project_count,
       congressional_districts.high_school_enrollment,
       congressional_districts.median_household_income
     SQL
