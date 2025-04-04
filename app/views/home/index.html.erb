@@ -1,5 +1,11 @@
 <h1>YSWS Leaderboard</h1>
 
+<div style="margin-bottom: 20px; padding: 10px; border: 1px solid #eee; background-color: #f9f9f9; border-radius: 5px;">
+  <h3 style="margin-top: 0;">What is a 'Portfolio-Ready Project'?</h3>
+  <p>This metric, used by Hack Club, represents approximately <strong>10 hours of focused work</strong> by a high school student creating a coding project (like a website, app, or game) that is then <strong>published online</strong> for others to see and use.</p>
+  <p><strong>Why it Matters:</strong> In the tech industry, portfolios of completed projects are the primary way talent is evaluated. This metric quantifies the real-world technical skills students are developing and demonstrating in your district – skills crucial for future innovation and workforce readiness.</p>
+</div>
+
 <style>
   .representative-picture {
     max-width: 50px;
@@ -13,7 +19,9 @@
     <tr>
       <th>Rank</th>
       <th>District</th>
-      <th>Weighted Projects Shipped</th>
+      <th>Portfolio-Ready Projects</th>
+      <th>Portfolio-Ready Projects Normalized By High Schooler Count</th>
+      <th>Portfolio-Ready Projects Normalized By Median Income</th>
       <th>Representative</th>
       <th>Party</th>
       <th>High School Enrollment</th>
@@ -22,18 +30,24 @@
     </tr>
   </thead>
   <tbody>
-    <% @districts.each_with_index do |district, index| %>
+    <% @ranked_districts.each do |item| %>
       <tr>
-        <td><%= index + 1 %></td>
-        <td><%= district.name %></td>
-        <td><%= number_with_precision(district.project_count, precision: 1) %></td>
-        <td><%= district.representative_name %></td>
-        <td><%= district.representative_party %></td>
-        <td><%= number_with_delimiter(district.high_school_enrollment) %></td>
-        <td><%= number_to_currency(district.median_household_income, precision: 0) %></td>
+        <td><%= item.normalized_rank %></td>
+        <td><%= item.district.name %></td>
+        <td><%= number_with_precision(item.district.project_count, precision: 1) %></td>
         <td>
-          <% if district.representative_picture_url.present? %>
-            <%= image_tag district.representative_picture_url, alt: "Photo of #{district.representative_name}", class: 'representative-picture' %>
+          <%= number_with_precision(item.normalized_score, precision: 1) %>
+        </td>
+        <td>
+          <%= number_with_precision(item.normalized_income_score, precision: 1) %>
+        </td>
+        <td><%= item.district.representative_name %></td>
+        <td><%= item.district.representative_party %></td>
+        <td><%= number_with_delimiter(item.district.high_school_enrollment) %></td>
+        <td><%= number_to_currency(item.district.median_household_income, precision: 0) %></td>
+        <td>
+          <% if item.district.representative_picture_url.present? %>
+            <%= image_tag item.district.representative_picture_url, alt: "Photo of #{item.district.representative_name}", class: 'representative-picture' %>
           <% end %>
         </td>
       </tr>
