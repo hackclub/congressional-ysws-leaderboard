@@ -32,19 +32,20 @@ class HomeController < ApplicationController
       )
     end
 
-    # Sort districts by income-normalized score in descending order
-    sorted_districts = districts_with_scores.sort_by { |d| -d.normalized_income_score }
+    # Sort districts by raw project count in descending order
+    sorted_districts = districts_with_scores.sort_by { |d| -d.district.project_count }
 
-    # Assign ranks based on income-normalized score, handling ties
+    # Assign ranks based on raw project count, handling ties
     @ranked_districts = []
     last_score = nil
     current_rank = 0
     sorted_districts.each_with_index do |item, index|
-      if item.normalized_income_score != last_score
+      # Use project_count for ranking comparison
+      if item.district.project_count != last_score
         current_rank = index + 1
-        last_score = item.normalized_income_score
+        last_score = item.district.project_count
       end
-      item.normalized_rank = current_rank # Reuse the same attribute name for simplicity in view
+      item.normalized_rank = current_rank # Keep using this attribute name for rank
       @ranked_districts << item
     end
 

@@ -77,3 +77,7 @@ end
 gem 'activerecord-postgis-adapter'
 gem 'rgeo'
 gem 'rgeo-geojson'
+
+gem "tailwindcss-ruby", "~> 4.0"
+
+gem "tailwindcss-rails", "~> 4.2"

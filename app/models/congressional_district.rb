@@ -8,8 +8,25 @@ class CongressionalDistrict < ApplicationRecord
   # Add association to Ysws::Project
   has_many :ysws_projects, class_name: 'Ysws::Project', foreign_key: 'congressional_district_id'
 
+  STATE_NAMES = {
+    'AL' => 'Alabama', 'AK' => 'Alaska', 'AZ' => 'Arizona', 'AR' => 'Arkansas', 'CA' => 'California',
+    'CO' => 'Colorado', 'CT' => 'Connecticut', 'DE' => 'Delaware', 'FL' => 'Florida', 'GA' => 'Georgia',
+    'HI' => 'Hawaii', 'ID' => 'Idaho', 'IL' => 'Illinois', 'IN' => 'Indiana', 'IA' => 'Iowa',
+    'KS' => 'Kansas', 'KY' => 'Kentucky', 'LA' => 'Louisiana', 'ME' => 'Maine', 'MD' => 'Maryland',
+    'MA' => 'Massachusetts', 'MI' => 'Michigan', 'MN' => 'Minnesota', 'MS' => 'Mississippi', 'MO' => 'Missouri',
+    'MT' => 'Montana', 'NE' => 'Nebraska', 'NV' => 'Nevada', 'NH' => 'New Hampshire', 'NJ' => 'New Jersey',
+    'NM' => 'New Mexico', 'NY' => 'New York', 'NC' => 'North Carolina', 'ND' => 'North Dakota', 'OH' => 'Ohio',
+    'OK' => 'Oklahoma', 'OR' => 'Oregon', 'PA' => 'Pennsylvania', 'RI' => 'Rhode Island', 'SC' => 'South Carolina',
+    'SD' => 'South Dakota', 'TN' => 'Tennessee', 'TX' => 'Texas', 'UT' => 'Utah', 'VT' => 'Vermont',
+    'VA' => 'Virginia', 'WA' => 'Washington', 'WV' => 'West Virginia', 'WI' => 'Wisconsin', 'WY' => 'Wyoming',
+    # Add territories if needed
+    'AS' => 'American Samoa', 'DC' => 'District of Columbia', 'GU' => 'Guam', 'MP' => 'Northern Mariana Islands',
+    'PR' => 'Puerto Rico', 'VI' => 'U.S. Virgin Islands'
+  }.freeze
+
   def name
-    "#{state}-#{district_number}"
+    state_full_name = STATE_NAMES[state] || state # Fallback to abbreviation if not found
+    "#{state_full_name} - District #{district_number}"
   end
 
   def self.leaderboard

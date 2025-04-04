@@ -1,56 +1,93 @@
-<h1>YSWS Leaderboard</h1>
+<div class="bg-gray-900 text-gray-200 font-sans p-4 md:p-8 min-h-screen">
+  <h1 class="text-3xl md:text-4xl font-bold text-center mb-6">Portfolio-Ready Project Leaderboard</h1>
 
-<div style="margin-bottom: 20px; padding: 10px; border: 1px solid #eee; background-color: #f9f9f9; border-radius: 5px;">
-  <h3 style="margin-top: 0;">What is a 'Portfolio-Ready Project'?</h3>
-  <p>This metric, used by Hack Club, represents approximately <strong>10 hours of focused work</strong> by a high school student creating a coding project (like a website, app, or game) that is then <strong>published online</strong> for others to see and use.</p>
-  <p><strong>Why it Matters:</strong> In the tech industry, portfolios of completed projects are the primary way talent is evaluated. This metric quantifies the real-world technical skills students are developing and demonstrating in your district – skills crucial for future innovation and workforce readiness.</p>
-</div>
+  <div class="mb-8 p-4 border border-gray-700 bg-gray-800 rounded-lg max-w-3xl mx-auto text-sm shadow-lg">
+    <h3 class="text-lg font-semibold mb-2 text-center md:text-left">What is a 'Portfolio-Ready Project'?</h3>
+    <p class="mb-2">This metric, used by Hack Club, represents approximately <strong>10 hours of focused work</strong> by a high school student creating a coding project (like a website, app, or game) that is then <strong>published online</strong> for others to see and use.</p>
+    <p><strong>Why it Matters:</strong> In the tech industry, portfolios of completed projects are the primary way talent is evaluated. This metric quantifies the real-world technical skills students are developing and demonstrating in your district – skills crucial for future innovation and workforce readiness.</p>
+  </div>
 
-<style>
-  .representative-picture {
-    max-width: 50px;
-    max-height: 50px;
-    border-radius: 50%; /* Optional: make images circular */
-  }
-</style>
+  <%# --- Top 3 Section --- %>
+  <div class="flex flex-col md:flex-row justify-center items-center md:items-end gap-4 mb-12 max-w-4xl mx-auto">
 
-<table>
-  <thead>
-    <tr>
-      <th>Rank</th>
-      <th>District</th>
-      <th>Portfolio-Ready Projects</th>
-      <th>Portfolio-Ready Projects Normalized By High Schooler Count</th>
-      <th>Portfolio-Ready Projects Normalized By Median Income</th>
-      <th>Representative</th>
-      <th>Party</th>
-      <th>High School Enrollment</th>
-      <th>Median Household Income</th>
-      <th>Picture</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @ranked_districts.each do |item| %>
-      <tr>
-        <td><%= item.normalized_rank %></td>
-        <td><%= item.district.name %></td>
-        <td><%= number_with_precision(item.district.project_count, precision: 1) %></td>
-        <td>
-          <%= number_with_precision(item.normalized_score, precision: 1) %>
-        </td>
-        <td>
-          <%= number_with_precision(item.normalized_income_score, precision: 1) %>
-        </td>
-        <td><%= item.district.representative_name %></td>
-        <td><%= item.district.representative_party %></td>
-        <td><%= number_with_delimiter(item.district.high_school_enrollment) %></td>
-        <td><%= number_to_currency(item.district.median_household_income, precision: 0) %></td>
-        <td>
-          <% if item.district.representative_picture_url.present? %>
-            <%= image_tag item.district.representative_picture_url, alt: "Photo of #{item.district.representative_name}", class: 'representative-picture' %>
-          <% end %>
-        </td>
-      </tr>
+    <%# Find items for ranks 1, 2, 3 %>
+    <% rank_1_item = @ranked_districts.find { |i| i.normalized_rank == 1 } %>
+    <% rank_2_item = @ranked_districts.find { |i| i.normalized_rank == 2 } %>
+    <% rank_3_item = @ranked_districts.find { |i| i.normalized_rank == 3 } %>
+
+    <%# Rank 2 Card %>
+    <% if rank_2_item %>
+      <div class="bg-gray-700 p-4 md:p-6 rounded-lg text-center order-2 md:order-1 w-64 transform md:translate-y-8 shadow-xl">
+        <% if rank_2_item.district.representative_picture_url.present? %>
+          <%= image_tag rank_2_item.district.representative_picture_url, alt: rank_2_item.district.representative_name, class: "w-16 h-16 md:w-20 md:h-20 rounded-full mx-auto mb-3 border-2 border-gray-500 object-cover" %>
+        <% else %>
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-full mx-auto mb-3 border-2 border-gray-500 bg-gray-600 flex items-center justify-center text-gray-400 text-xs">No Pic</div>
+        <% end %>
+        <h3 class="font-semibold text-md md:text-lg truncate"><%= rank_2_item.district.representative_name %></h3>
+        <p class="text-xs text-gray-500 truncate mb-2"><%= rank_2_item.district.name %></p>
+        <p class="text-xs md:text-sm text-gray-400 mb-3"><%= number_with_precision(rank_2_item.district.project_count, precision: 0) %> projects</p>
+        <div class="bg-gray-600 text-white py-1 px-3 md:py-2 md:px-4 rounded-md inline-block text-lg md:text-xl font-bold">
+          #2
+        </div>
+      </div>
     <% end %>
-  </tbody>
-</table>
+
+    <%# Rank 1 Card %>
+    <% if rank_1_item %>
+      <div class="bg-yellow-600 p-6 md:p-8 rounded-lg text-center order-1 md:order-2 w-72 z-10 shadow-2xl">
+        <% if rank_1_item.district.representative_picture_url.present? %>
+          <%= image_tag rank_1_item.district.representative_picture_url, alt: rank_1_item.district.representative_name, class: "w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 border-2 border-yellow-400 object-cover" %>
+        <% else %>
+           <div class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 border-2 border-yellow-400 bg-yellow-700 flex items-center justify-center text-white text-sm">No Pic</div>
+        <% end %>
+        <h3 class="font-bold text-lg md:text-xl truncate"><%= rank_1_item.district.representative_name %></h3>
+        <p class="text-sm text-yellow-200 truncate mb-2"><%= rank_1_item.district.name %></p>
+        <p class="text-sm md:text-base text-yellow-100 mb-4"><%= number_with_precision(rank_1_item.district.project_count, precision: 0) %> projects</p>
+        <div class="bg-yellow-700 text-white py-2 px-4 md:py-3 md:px-5 rounded-md inline-block text-xl md:text-2xl font-extrabold">
+          #1
+        </div>
+      </div>
+    <% end %>
+
+    <%# Rank 3 Card %>
+    <% if rank_3_item %>
+      <div class="bg-orange-800 p-4 md:p-6 rounded-lg text-center order-3 md:order-3 w-64 transform md:translate-y-8 shadow-xl">
+        <% if rank_3_item.district.representative_picture_url.present? %>
+          <%= image_tag rank_3_item.district.representative_picture_url, alt: rank_3_item.district.representative_name, class: "w-16 h-16 md:w-20 md:h-20 rounded-full mx-auto mb-3 border-2 border-orange-600 object-cover" %>
+        <% else %>
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-full mx-auto mb-3 border-2 border-orange-600 bg-orange-900 flex items-center justify-center text-orange-200 text-xs">No Pic</div>
+        <% end %>
+        <h3 class="font-semibold text-md md:text-lg truncate"><%= rank_3_item.district.representative_name %></h3>
+        <p class="text-xs text-orange-300 truncate mb-2"><%= rank_3_item.district.name %></p>
+        <p class="text-xs md:text-sm text-orange-200 mb-3"><%= number_with_precision(rank_3_item.district.project_count, precision: 0) %> projects</p>
+        <div class="bg-orange-700 text-white py-1 px-3 md:py-2 md:px-4 rounded-md inline-block text-lg md:text-xl font-bold">
+          #3
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%# --- Ranks 4+ List --- %>
+  <div class="max-w-3xl mx-auto space-y-3">
+    <% @ranked_districts.select { |i| i.normalized_rank >= 4 }.each do |item| %>
+      <div class="bg-gray-800 rounded-lg p-3 md:p-4 flex items-center justify-between shadow-md hover:bg-gray-700 transition duration-150 ease-in-out">
+        <div class="flex items-center space-x-3 md:space-x-4 flex-1 min-w-0">
+          <span class="text-gray-500 font-semibold w-6 md:w-8 text-center flex-shrink-0">#<%= item.normalized_rank %></span>
+          <% if item.district.representative_picture_url.present? %>
+            <%= image_tag item.district.representative_picture_url, alt: item.district.representative_name, class: "w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-700 flex-shrink-0 object-cover" %>
+          <% else %>
+            <div class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-700 bg-gray-700 flex items-center justify-center text-gray-500 text-xs flex-shrink-0">No Pic</div>
+          <% end %>
+          <div class="flex-1 min-w-0">
+            <span class="font-medium truncate block"><%= item.district.representative_name %></span>
+            <span class="text-xs text-gray-400 truncate block"><%= item.district.name %></span>
+          </div>
+        </div>
+        <div class="text-right ml-2 flex-shrink-0">
+          <span class="font-semibold text-sm md:text-base"><%= number_with_precision(item.district.project_count, precision: 0) %> projects</span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+</div>
