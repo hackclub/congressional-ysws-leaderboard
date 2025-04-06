@@ -49,18 +49,7 @@ class HomeController < ApplicationController
       @ranked_districts << item
     end
 
-    # Fetch recent projects for tooltip data
-    district_ids = @ranked_districts.map { |ranked| ranked.district.id }
-    recent_projects_by_district = Ysws::Project.where(congressional_district_id: district_ids)
-                                              .where("(fields ->> 'Approved At')::date IS NOT NULL")
-                                              .order(Arel.sql("congressional_district_id ASC, (fields ->> 'Approved At')::date DESC"))
-                                              .group_by(&:congressional_district_id)
-
-    # Assign the top 3 recent projects to each ranked district
-    @ranked_districts.each do |ranked_item|
-      district_id = ranked_item.district.id
-      ranked_item.recent_projects = recent_projects_by_district[district_id]&.take(3) || []
-    end
+    @ranked_districts = @ranked_districts.sort_by(&:normalized_rank)
 
     # The original @districts is no longer used directly by the view,
     # @ranked_districts contains all necessary info including the original district object.
