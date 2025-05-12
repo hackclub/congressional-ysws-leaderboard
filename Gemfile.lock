@@ -331,8 +331,8 @@ GEM
     tailwindcss-rails (4.2.1)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
-    tailwindcss-ruby (4.0.17-aarch64-linux-gnu)
-    tailwindcss-ruby (4.0.17-x86_64-linux-gnu)
+    tailwindcss-ruby (4.1.6-aarch64-linux-gnu)
+    tailwindcss-ruby (4.1.6-x86_64-linux-gnu)
     thor (1.3.2)
     thruster (0.1.12-aarch64-linux)
     thruster (0.1.12-x86_64-linux)
@@ -393,7 +393,7 @@ DEPENDENCIES
   stackprof
   stimulus-rails
   tailwindcss-rails (~> 4.2)
-  tailwindcss-ruby (~> 4.0)
+  tailwindcss-ruby (~> 4.1)
   thruster
   turbo-rails
   tzinfo-data
