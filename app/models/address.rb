@@ -47,7 +47,7 @@ class Address < ApplicationRecord
     return if location.present? || invalid_address?
 
     begin
-      result = GoogleMapsService.instance.geocode(address)
+      result = HackClubGeocoderService.instance.geocode(address)
       new_location = "POINT(#{result[:lng]} #{result[:lat]})"
       self.location = new_location
       self.invalid_address = false
@@ -72,8 +72,8 @@ class Address < ApplicationRecord
   private
 
   def self.invalid_input_error?(error)
-    error.message.include?("INVALID_REQUEST") || 
-      error.message.include?("ZERO_RESULTS") ||
+    error.message.include?("INVALID_ADDRESS") || 
+      error.message.include?("No results found for address") ||
       error.message.include?("Missing the 'address'")
   end
 

@@ -1,9 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  fields: '{"Approved At": "2025-01-15", "YSWS–Weighted Project Contribution": "5.0"}'
+  address: "123 Main Street, Springfield, IL"
   location: "POINT(-89.6501 39.7817)"
 
 two:
-  fields: '{"Approved At": "2025-02-01", "YSWS–Weighted Project Contribution": "3.0"}'
+  address: "456 Oak Avenue, Chicago, IL"
   location: "POINT(-87.6298 41.8781)" 

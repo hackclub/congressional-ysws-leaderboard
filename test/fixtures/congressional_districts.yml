@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  state: MyString
+  state: IL
   district_number: 1
-  boundary: 
+  boundary: "POLYGON((-90 39, -90 40, -89 40, -89 39, -90 39))"
 
 two:
-  state: MyString
+  state: CA
   district_number: 1
-  boundary: 
+  boundary: "POLYGON((-122 37, -122 38, -121 38, -121 37, -122 37))" 
